@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public interface LessonService {
     LessonModel save(LessonModel lessonModel);
@@ -16,7 +16,7 @@ public interface LessonService {
 
     void delete(LessonModel lessonModel);
 
-    List<LessonModel> findAllLessonByModule(UUID moduleId);
+    List<LessonModel> findAllByModule(UUID moduleId);
 
-    Page<LessonModel> findAllLessonByModule(Specification<LessonModel> spec, Pageable pageable);
+    Page<LessonModel> findAllByModule(Specification<LessonModel> spec, Pageable pageable);
 }

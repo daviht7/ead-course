@@ -9,9 +9,10 @@ import com.ead.course.publishers.NotificationCommandPublisher;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.repositories.ModuleRepository;
+import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.CourseService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,25 +25,31 @@ import java.util.UUID;
 
 @Log4j2
 @Service
-@RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
-    private final CourseRepository courseRepository;
+    @Autowired
+    CourseRepository courseRepository;
 
-    private final ModuleRepository moduleRepository;
+    @Autowired
+    ModuleRepository moduleRepository;
 
-    private final LessonRepository lessonRepository;
+    @Autowired
+    LessonRepository lessonRepository;
 
-    private final NotificationCommandPublisher notificationCommandPublisher;
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    NotificationCommandPublisher notificationCommandPublisher;
 
     @Transactional
     @Override
     public void delete(CourseModel courseModel) {
-        List<ModuleModel> moduleModelList = moduleRepository.findAllModulesIntoCourse(courseModel.getCourseId());
-        if (!moduleModelList.isEmpty()) {
-            for (ModuleModel moduleModel : moduleModelList) {
-                List<LessonModel> lessonModelList = lessonRepository.findAllLessonsIntoModule(moduleModel.getModuleId());
-                if (!lessonModelList.isEmpty()) {
+        List<ModuleModel> moduleModelList = moduleRepository.findAllLModulesIntoCourse(courseModel.getCourseId());
+        if (!moduleModelList.isEmpty()){
+            for(ModuleModel module : moduleModelList){
+                List<LessonModel> lessonModelList = lessonRepository.findAllLessonsIntoModule(module.getModuleId());
+                if (!lessonModelList.isEmpty()){
                     lessonRepository.deleteAll(lessonModelList);
                 }
             }
@@ -89,9 +96,9 @@ public class CourseServiceImpl implements CourseService {
             notificationCommandDto.setUserId(user.getUserId());
             notificationCommandPublisher.publishNotificationCommand(notificationCommandDto);
         } catch (Exception e) {
-            log.warn("Error sending notification");
+            log.warn("Error sending notification!");
         }
-
     }
+
 
 }

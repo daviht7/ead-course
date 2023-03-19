@@ -17,7 +17,7 @@ import java.util.UUID;
 public class LessonServiceImpl implements LessonService {
 
     @Autowired
-    private LessonRepository lessonRepository;
+    LessonRepository lessonRepository;
 
     @Override
     public LessonModel save(LessonModel lessonModel) {
@@ -35,12 +35,12 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<LessonModel> findAllLessonByModule(UUID moduleId) {
-        return lessonRepository.findAllLessonByModule(moduleId);
+    public List<LessonModel> findAllByModule(UUID moduleId) {
+        return lessonRepository.findAllLessonsIntoModule(moduleId);
     }
 
     @Override
-    public Page<LessonModel> findAllLessonByModule(Specification<LessonModel> spec, Pageable pageable) {
+    public Page<LessonModel> findAllByModule(Specification<LessonModel> spec, Pageable pageable) {
         return lessonRepository.findAll(spec, pageable);
     }
 }

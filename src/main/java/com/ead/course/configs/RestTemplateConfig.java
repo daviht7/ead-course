@@ -1,6 +1,5 @@
 package com.ead.course.configs;
 
-
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,7 @@ public class RestTemplateConfig {
     @LoadBalanced
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        // Do any additional configuration here
         return builder.build();
     }
-
 }

@@ -1,5 +1,6 @@
 package com.ead.course.validation;
 
+
 import com.ead.course.configs.security.AuthenticationCurrentUserService;
 import com.ead.course.dtos.CourseDto;
 import com.ead.course.enums.UserType;
@@ -23,10 +24,10 @@ public class CourseValidator implements Validator {
     private Validator validator;
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @Autowired
-    private AuthenticationCurrentUserService authenticationCurrentUserService;
+    AuthenticationCurrentUserService authenticationCurrentUserService;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -37,33 +38,23 @@ public class CourseValidator implements Validator {
     public void validate(Object o, Errors errors) {
         CourseDto courseDto = (CourseDto) o;
         validator.validate(courseDto, errors);
-
-        if (!errors.hasErrors()) {
+        if(!errors.hasErrors()){
             validateUserInstructor(courseDto.getUserInstructor(), errors);
         }
     }
 
-    private void validateUserInstructor(UUID userInstructor, Errors errors) {
-
+    private void validateUserInstructor(UUID userInstructor, Errors errors){
         UUID currentUserId = authenticationCurrentUserService.getCurrentUser().getUserId();
-
-        if (currentUserId.equals(userInstructor)) {
-
+        if(currentUserId.equals(userInstructor)) {
             Optional<UserModel> userModelOptional = userService.findById(userInstructor);
-
-            if (userModelOptional.isEmpty()) {
+            if (!userModelOptional.isPresent()) {
                 errors.rejectValue("userInstructor", "UserInstructorError", "Instructor not found.");
             }
-            if (userModelOptional.isPresent()) {
-                if (!userModelOptional.get().getUserType().equals(UserType.INSTRUCTOR.toString())) {
-                    errors.rejectValue("userInstructor", "UserInstructorError", "User must be INSTRUCTOR or ADMIN.");
-                }
+            if (userModelOptional.get().getUserType().equals(UserType.STUDENT.toString())) {
+                errors.rejectValue("userInstructor", "UserInstructorError", "User must be INSTRUCTOR or ADMIN.");
             }
-
         } else {
             throw new AccessDeniedException("Forbidden");
         }
-
     }
-
 }

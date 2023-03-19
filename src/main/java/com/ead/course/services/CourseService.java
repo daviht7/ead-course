@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CourseService {
-
     void delete(CourseModel courseModel);
 
     CourseModel save(CourseModel courseModel);
@@ -22,5 +21,6 @@ public interface CourseService {
     boolean existsByCourseAndUser(UUID courseId, UUID userId);
 
     void saveSubscriptionUserInCourse(UUID courseId, UUID userId);
+
     void saveSubscriptionUserInCourseAndSendNotification(CourseModel course, UserModel user);
 }
